@@ -7,19 +7,19 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const search = searchParams.get("search") || "";
 
-    let customers;
+    let customers: Customer[];
     
     if (search) {
-      customers = await sql<Customer[]>`
+      customers = await sql`
         SELECT * FROM customers 
         WHERE name ILIKE ${`%${search}%`} OR email ILIKE ${`%${search}%`} OR location ILIKE ${`%${search}%`}
         ORDER BY created_at DESC
-      `;
+      ` as Customer[];
     } else {
-      customers = await sql<Customer[]>`
+      customers = await sql`
         SELECT * FROM customers 
         ORDER BY created_at DESC
-      `;
+      ` as Customer[];
     }
 
     return NextResponse.json(customers);

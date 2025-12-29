@@ -9,60 +9,60 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category") || "";
     const status = searchParams.get("status") || "";
 
-    let products;
+    let products: Product[];
     
     if (search && category && status) {
-      products = await sql<Product[]>`
+      products = await sql`
         SELECT * FROM products 
         WHERE (name ILIKE ${`%${search}%`} OR category ILIKE ${`%${search}%`})
         AND category = ${category}
         AND status = ${status}
         ORDER BY created_at DESC
-      `;
+      ` as Product[];
     } else if (search && category) {
-      products = await sql<Product[]>`
+      products = await sql`
         SELECT * FROM products 
         WHERE (name ILIKE ${`%${search}%`} OR category ILIKE ${`%${search}%`})
         AND category = ${category}
         ORDER BY created_at DESC
-      `;
+      ` as Product[];
     } else if (search && status) {
-      products = await sql<Product[]>`
+      products = await sql`
         SELECT * FROM products 
         WHERE (name ILIKE ${`%${search}%`} OR category ILIKE ${`%${search}%`})
         AND status = ${status}
         ORDER BY created_at DESC
-      `;
+      ` as Product[];
     } else if (category && status) {
-      products = await sql<Product[]>`
+      products = await sql`
         SELECT * FROM products 
         WHERE category = ${category}
         AND status = ${status}
         ORDER BY created_at DESC
-      `;
+      ` as Product[];
     } else if (search) {
-      products = await sql<Product[]>`
+      products = await sql`
         SELECT * FROM products 
         WHERE name ILIKE ${`%${search}%`} OR category ILIKE ${`%${search}%`}
         ORDER BY created_at DESC
-      `;
+      ` as Product[];
     } else if (category) {
-      products = await sql<Product[]>`
+      products = await sql`
         SELECT * FROM products 
         WHERE category = ${category}
         ORDER BY created_at DESC
-      `;
+      ` as Product[];
     } else if (status) {
-      products = await sql<Product[]>`
+      products = await sql`
         SELECT * FROM products 
         WHERE status = ${status}
         ORDER BY created_at DESC
-      `;
+      ` as Product[];
     } else {
-      products = await sql<Product[]>`
+      products = await sql`
         SELECT * FROM products 
         ORDER BY created_at DESC
-      `;
+      ` as Product[];
     }
 
     return NextResponse.json(products);

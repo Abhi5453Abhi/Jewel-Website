@@ -8,36 +8,36 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search") || "";
     const status = searchParams.get("status") || "";
 
-    let orders;
+    let orders: Order[];
     
     if (search && status && status !== "All") {
-      orders = await sql<Order[]>`
+      orders = await sql`
         SELECT * FROM orders 
         WHERE (id::text ILIKE ${`%${search}%`} OR customer_name ILIKE ${`%${search}%`} OR product_name ILIKE ${`%${search}%`})
         AND status = ${status.toLowerCase()}
         ORDER BY created_at DESC 
         LIMIT 100
-      `;
+      ` as Order[];
     } else if (search) {
-      orders = await sql<Order[]>`
+      orders = await sql`
         SELECT * FROM orders 
         WHERE id::text ILIKE ${`%${search}%`} OR customer_name ILIKE ${`%${search}%`} OR product_name ILIKE ${`%${search}%`}
         ORDER BY created_at DESC 
         LIMIT 100
-      `;
+      ` as Order[];
     } else if (status && status !== "All") {
-      orders = await sql<Order[]>`
+      orders = await sql`
         SELECT * FROM orders 
         WHERE status = ${status.toLowerCase()}
         ORDER BY created_at DESC 
         LIMIT 100
-      `;
+      ` as Order[];
     } else {
-      orders = await sql<Order[]>`
+      orders = await sql`
         SELECT * FROM orders 
         ORDER BY created_at DESC 
         LIMIT 100
-      `;
+      ` as Order[];
     }
 
     return NextResponse.json(orders);
