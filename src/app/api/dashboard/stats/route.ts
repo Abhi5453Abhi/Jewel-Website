@@ -8,25 +8,25 @@ export async function GET() {
       SELECT COALESCE(SUM(amount), 0) as total_revenue
       FROM orders
       WHERE status IN ('completed', 'shipped') AND payment_status = 'paid'
-    `;
+    ` as Array<{ total_revenue: string }>;
     const totalRevenue = parseFloat(revenueResult[0]?.total_revenue || "0");
 
     // Get total orders
     const ordersResult = await sql`
       SELECT COUNT(*) as total_orders FROM orders
-    `;
+    ` as Array<{ total_orders: string }>;
     const totalOrders = parseInt(ordersResult[0]?.total_orders || "0");
 
     // Get total customers
     const customersResult = await sql`
       SELECT COUNT(*) as total_customers FROM customers
-    `;
+    ` as Array<{ total_customers: string }>;
     const totalCustomers = parseInt(customersResult[0]?.total_customers || "0");
 
     // Get total products
     const productsResult = await sql`
       SELECT COUNT(*) as total_products FROM products
-    `;
+    ` as Array<{ total_products: string }>;
     const totalProducts = parseInt(productsResult[0]?.total_products || "0");
 
     // Get revenue from last month for comparison
@@ -37,7 +37,7 @@ export async function GET() {
         AND payment_status = 'paid'
         AND created_at >= CURRENT_DATE - INTERVAL '30 days'
         AND created_at < CURRENT_DATE - INTERVAL '1 day'
-    `;
+    ` as Array<{ total_revenue: string }>;
     const lastMonthRevenue = parseFloat(
       lastMonthRevenueResult[0]?.total_revenue || "0"
     );
@@ -48,7 +48,7 @@ export async function GET() {
       FROM orders
       WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
         AND created_at < CURRENT_DATE - INTERVAL '1 day'
-    `;
+    ` as Array<{ total_orders: string }>;
     const lastMonthOrders = parseInt(
       lastMonthOrdersResult[0]?.total_orders || "0"
     );
@@ -59,7 +59,7 @@ export async function GET() {
       FROM customers
       WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
         AND created_at < CURRENT_DATE - INTERVAL '1 day'
-    `;
+    ` as Array<{ total_customers: string }>;
     const lastMonthCustomers = parseInt(
       lastMonthCustomersResult[0]?.total_customers || "0"
     );

@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       INSERT INTO customers (name, email, phone, location, status)
       VALUES (${name}, ${email}, ${phone || null}, ${location || null}, ${status})
       RETURNING *
-    `;
+    ` as Customer[];
 
     return NextResponse.json(result[0], { status: 201 });
   } catch (error: any) {

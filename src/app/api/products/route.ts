@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
       INSERT INTO products (name, description, category, price, stock, image_url, status)
       VALUES (${name}, ${description || null}, ${category}, ${price}, ${stock}, ${image_url}, ${status})
       RETURNING *
-    `;
+    ` as Product[];
 
     return NextResponse.json(result[0], { status: 201 });
   } catch (error) {

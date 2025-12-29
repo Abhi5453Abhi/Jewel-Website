@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
         ${product_id}, ${product_name}, ${amount}, ${status}, ${payment_status}
       )
       RETURNING *
-    `;
+    ` as Order[];
 
     return NextResponse.json(result[0], { status: 201 });
   } catch (error) {

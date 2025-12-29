@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { Product } from "@/lib/types";
 
 export async function GET(
   request: NextRequest,
@@ -9,7 +10,7 @@ export async function GET(
     const { id } = await params;
     const result = await sql`
       SELECT * FROM products WHERE id = ${id}
-    `;
+    ` as Product[];
 
     if (result.length === 0) {
       return NextResponse.json(
@@ -40,7 +41,7 @@ export async function PUT(
     // First get the current product
     const current = await sql`
       SELECT * FROM products WHERE id = ${id}
-    `;
+    ` as Product[];
 
     if (current.length === 0) {
       return NextResponse.json(
@@ -65,7 +66,7 @@ export async function PUT(
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ${id}
       RETURNING *
-    `;
+    ` as Product[];
 
     return NextResponse.json(result[0]);
   } catch (error) {
@@ -85,7 +86,7 @@ export async function DELETE(
     const { id } = await params;
     const result = await sql`
       DELETE FROM products WHERE id = ${id} RETURNING id
-    `;
+    ` as Product[];
 
     if (result.length === 0) {
       return NextResponse.json(
